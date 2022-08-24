@@ -1,7 +1,8 @@
 const neo4j = require('neo4j-driver');
 
-
-const { NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD } = process.env;
+NEO4J_URI = "neo4j+s://1923a506.databases.neo4j.io"
+NEO4J_USER = "neo4j"
+NEO4J_PASSWORD = "5ORDINBDW78OY5HEjih_HEa7UtJHA-oHokro94v14n0"
 
 module.exports = {
     connectNeo4j: async () =>{
