@@ -1,14 +1,24 @@
-const { Integer } = require('neo4j-driver-core');
+const express = require("express");
+const app = express();
+const cors = require("cors");
+var corsOptions = {
+  origin: "http://localhost:8081"
+};
 
-const neo4jDriver = require('./Neo4j/connection').connectNeo4j();
+app.use(cors(corsOptions));
+// parse requests of content-type - application/json
+app.use(express.json());
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+// simple route
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the application." });
+});
 
-const startSession = async () =>{
-    const session = (await neo4jDriver).session();
-    if(session._open){
-        console.log("neo4j connection success")
-        return session
-    }
-    throw new Error('neo4j connection failed')
-}
+require("./Neo4j/rutas")(app);
+// set port, listen for requests
+const PORT = process.env.PORT || 3001;
 
-startSession()
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
