@@ -1,44 +1,93 @@
-import React from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import '../LoginUser/Login.css'
+import Cookies from 'universal-cookie';
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+
+
+
+
 export default function Login() {
-  return (
-	<div className="container">
-	<div className="d-flex justify-content-center h-100">
-		<div className="card" style={{"top":"15rem"}}>
-			<div className="card-header">
-				<h3>Iniciar Sesión</h3>
-			</div>
-			<div className="card-body ">
-				<form>
-					<div className="input-group form-group ">
-						<div className="input-group-prepend">
-							<span className="input-group-text p-3"><i className="fas fa-user"></i></span>
-						</div>
-						<input type="text" className="form-control " placeholder="Carné"/>
-		
-					</div>
-					<br></br>
-					<div className="input-group form-group">
-						<div className="input-group-prepend">
-							<span className="input-group-text p-3"><i className="fas fa-key"></i></span>
-						</div>
-						<input type="password" className="form-control" placeholder="Contraseña"/>
-					</div>
-					<br></br>
+	//URL para la peticion al backend
+	const baseUrl: string = 'http://localhost:3001/api/prototipo/login';
+	const cookies = new Cookies();
+	const navigate = useNavigate();
+	const [form, setForm] = useState({
+		carnet: '',
+		contraseña: ''
+	});
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { //EN TS hay que especificar el e es de tipo evento de un form
+		const { name, value } = e.target;
+		setForm({
+			...form,
+			[name]: value
+		});
+		console.log(form);
+	}
 
-					<div className="form-group">
-						<input type="submit" value="Entrar" className="btn float-right login_btn"/>
+
+	const iniciarSesion = async () => {
+
+		try {
+			const { data } = await axios.post(baseUrl, form)
+			if (data) {
+				cookies.set("nombre", data.nombre, { path: "/" })
+				cookies.set("apellidos", data.apellidos, { path: "/" })
+				cookies.set("carnet", data.carnet, { path: "/" })
+				cookies.set("contraseña", data.contraseña, { path: "/" })
+				alert("Bievenido: " + cookies.get('nombre') + " " + data.apellidos);
+				navigate("/home");
+			}
+			else{
+				alert("Usuario no existe")
+			}
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				console.log('error message: ', error.message);
+				return error.message;
+			}
+		}
+
+	}
+
+
+	return (
+		<div className="container">
+			<div className="d-flex justify-content-center h-100">
+				<div className="card" style={{ "top": "15rem" }}>
+					<div className="card-header">
+						<h3>Iniciar Sesión</h3>
 					</div>
-				</form>
-			</div>
-			<div className="card-footer">
-				<div className="d-flex justify-content-center links">
-					No tienes cuenta?<a href="#"> Crear una ya mismo!</a>
+					<div className="card-body ">
+						<div className="input-group form-group ">
+							<div className="input-group-prepend">
+								<span className="input-group-text p-3"><i className="fas fa-user"></i></span>
+							</div>
+							<input name="carnet" type="text" className="form-control " placeholder="Carné" onChange={handleChange} />
+
+						</div>
+						<br></br>
+						<div className="input-group form-group">
+							<div className="input-group-prepend">
+								<span className="input-group-text p-3"><i className="fas fa-key"></i></span>
+							</div>
+							<input name="contraseña" type="password" className="form-control" placeholder="Contraseña" onChange={handleChange} />
+						</div>
+						<br></br>
+
+						<div className="form-group">
+							<input type="submit" value="Entrar" className="btn float-right login_btn" onClick={() => iniciarSesion()} />
+						</div>
+
+					</div>
+					<div className="card-footer">
+						<div className="d-flex justify-content-center links">
+							No tienes cuenta?<a href="#"> Crear una ya mismo!</a>
+						</div>
+
+					</div>
 				</div>
-
 			</div>
 		</div>
-	</div>
-</div>
-  )
+	)
 }

@@ -34,7 +34,7 @@ exports.selectByCarnet = async (req, res) => {
     const result = (await connectionNeo4j).writeTransaction( txc=>
         txc.run(
             'MATCH (a:Usuario {carnet: $carnet})  \
-            RETURN count(*) as count, a.nombre as name, a.apellidos as apellidos',
+            RETURN count(*) as count, a.nombre as name, a.apellidos as apellidos, a.contraseña as contraseña',
             { carnet: carnet}
         ).catch(error => {
             throw new Error(error)
@@ -44,7 +44,8 @@ exports.selectByCarnet = async (req, res) => {
         if(count > 0){
             const nombre = (await result).records[0].get('name');
             const apellidos = (await result).records[0].get('apellidos');
-            res.send({carnet:carnet,nombre:nombre, apellidos:apellidos})
+            const clave = (await result).records[0].get('contraseña');
+            res.send({carnet:carnet,nombre:nombre, apellidos:apellidos, contraseña:clave})
         }
     }
     else{
@@ -86,19 +87,23 @@ exports.createUser = async (req,res) => {
 }
 
 exports.login = async (req,res) => {
+    console.log('Entre aca')
     carnet = req.body["carnet"];
+    carnet = parseInt(carnet);
     contraseña = await encryptPassword(req.body["contraseña"]);
     const connectionNeo4j = await startSession();
     const result = (await connectionNeo4j).writeTransaction( txc =>
     txc.run( 
         'MATCH (n:Usuario {carnet: $userCarnet}) \
-         RETURN count(*) as count, n.contraseña as contraseña',
+         RETURN count(*) as count, n.nombre as name, n.apellidos as apellidos, n.contraseña as contraseña',
         {userCarnet: carnet}
     ).catch(error => {
         throw new Error(error)
     }));
     if((await result).records[0]){
         const count = (await result).records[0].get('count');
+        const nombre = (await result).records[0].get('name');
+        const apellidos = (await result).records[0].get('apellidos');
         const pass = (await result).records[0].get('contraseña');
         if (count.toNumber()===0){
             res.send(false);
@@ -107,7 +112,8 @@ exports.login = async (req,res) => {
         bcrypt.compare(req.body["contraseña"],pass, (err, isMatch) => {
             if (err) throw err;
             if (isMatch) {
-                res.send(true);
+                console.log(nombre)
+                res.send({carnet:carnet,nombre:nombre, apellidos:apellidos, contraseña:pass})
                 return true;
             } else {
             res.send(false)
