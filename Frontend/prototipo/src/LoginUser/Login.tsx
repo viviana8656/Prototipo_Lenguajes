@@ -35,7 +35,7 @@ export default function Login() {
 				cookies.set("apellidos", data.apellidos, { path: "/" })
 				cookies.set("carnet", data.carnet, { path: "/" })
 				cookies.set("contraseña", data.contraseña, { path: "/" })
-				alert("Bievenido: " + cookies.get('nombre') + " " + data.apellidos);
+				alert("Bienvenid@: " + cookies.get('nombre') + " " + data.apellidos);
 				navigate("/home");
 			}
 			else{
