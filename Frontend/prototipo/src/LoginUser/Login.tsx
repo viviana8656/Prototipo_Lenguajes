@@ -50,6 +50,9 @@ export default function Login() {
 
 	}
 
+	const goRegistro=()=>{
+		navigate("/registro");
+	}
 
 	return (
 		<div className="container">
@@ -81,7 +84,7 @@ export default function Login() {
 
 					</div>
 					<div className="card-footer">
-						<div className="d-flex justify-content-center links">
+						<div className="d-flex justify-content-center links" onClick={()=>goRegistro()}>
 							No tienes cuenta?<a href="#"> Crear una ya mismo!</a>
 						</div>
 
