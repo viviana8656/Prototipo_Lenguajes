@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
 	//URL para la peticion al backend
-	const baseUrl: string = 'http://localhost:3001/api/prototipo/login';
+	const baseUrl: string = 'http://localhost:4000/api/prototipo/login';
 	const cookies = new Cookies();
 	const navigate = useNavigate();
 	const [form, setForm] = useState({
@@ -66,7 +66,7 @@ export default function Login() {
 							<div className="input-group-prepend">
 								<span className="input-group-text p-3"><i className="fas fa-user"></i></span>
 							</div>
-							<input name="carnet" type="text" className="form-control " placeholder="Carné" onChange={handleChange} />
+							<input name="carnet" type="number" className="form-control " placeholder="Carné" onChange={handleChange} />
 
 						</div>
 						<br></br>

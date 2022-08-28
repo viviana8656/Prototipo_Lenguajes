@@ -56,6 +56,7 @@ exports.selectByCarnet = async (req, res) => {
 
 exports.createUser = async (req,res) => {
     carnet = req.body["carnet"];
+    carnet = parseInt(carnet);
     contraseña = req.body["contraseña"];
     nombre = req.body["nombre"];
     apellidos = req.body["apellidos"];

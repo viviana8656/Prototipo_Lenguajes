@@ -2,10 +2,10 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 var corsOptions = {
-  origin: "http://localhost:3000"
+  origin: "http://localhost:4000"
 };
 
-app.use(cors(corsOptions));
+ app.use(cors());
 // parse requests of content-type - application/json
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
 
 require("./Neo4j/rutas")(app);
 // set port, listen for requests
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
