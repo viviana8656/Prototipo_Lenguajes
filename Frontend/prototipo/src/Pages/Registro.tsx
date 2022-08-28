@@ -32,15 +32,15 @@ export default function Registo() {
 
 
   const registrarUsuario = async () => {
+	try{
+
 	
 	const { data } = await axios.post(baseUrl, form)
-	cookies.set("nombre", data.nombre, { path: "/" })
-	cookies.set("apellidos", data.apellidos, { path: "/" })
-	cookies.set("carnet", data.carnet, { path: "/" })
-	cookies.set("contraseña", data.contraseña, { path: "/" })
 	alert("Usuario Registrado");
-	navigate("/home");
-		
+	navigate("/");
+	}catch(error){
+		alert('No se pudo crear el usuario')
+	}	
 	}
   
   return (
@@ -83,7 +83,7 @@ export default function Registo() {
 				<div className="input-group-prepend">
 					<span className="input-group-text p-3"><i className="fas fa-key"></i></span>
 				</div>
-				<input name="password" type="password" className="form-control" placeholder="Contraseña" onChange={handleChange}/>
+				<input name="contraseña" type="password" className="form-control" placeholder="Contraseña" onChange={handleChange}/>
 			</div>
 			<br></br>
             <br></br>
