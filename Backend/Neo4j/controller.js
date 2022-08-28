@@ -27,6 +27,50 @@ const startSession = async () =>{
     throw new Error('neo4j connection failed')
 }
 
+exports.createTask = async (req,res) => {
+    let nombreTarea = req.body["nombre"];
+    let descripcionTarea = req.body["descripcion"];
+    let fechaFin = req.body["fecha"];
+    let connectionNeo4j = await startSession();
+    (connectionNeo4j).writeTransaction( txc=>
+        txc.run(
+            'CREATE (a:Tarea {nombre: $nombre,descripción:$descripcion, fechaFin:$fecha}) RETURN a',
+            { nombre: nombreTarea, descripcion:descripcionTarea,fecha:fechaFin}
+        ).catch(error => {
+            res.send(false);
+            throw new Error(error)
+        }));
+    let carnet = req.body["carnet"];
+    connectionNeo4j = await startSession();
+    (connectionNeo4j).writeTransaction( txc =>
+        txc.run( 
+        'MATCH (a:Usuario {carnet: $carnet}), (b:Tarea {nombre: $nombre,descripción:$descripcion, fechaFin:$fecha})  \
+         MERGE (a)-[r:REALIZA]->(b)',
+            { carnet: carnet, nombre: nombreTarea, descripcion:descripcionTarea,fecha:fechaFin}
+        ).catch(error => {
+            throw new Error(error)
+        }));
+    res.send(true)
+}
+
+exports.getUserTasks = async (req,res) => {
+    let carnet = parseInt(await req.query["carnet"]);
+    connectionNeo4j = await startSession();
+    const result = (await connectionNeo4j).writeTransaction( txc =>
+        txc.run( 
+            'MATCH (n:Usuario {carnet: $carnet})-[REALIZA]->(u:Tarea) \
+            RETURN COLLECT(u) as tareas',
+            { carnet: carnet}
+        ).catch(error => {
+            throw new Error(error)
+        }));
+    let lista = (await result).records[0].get('tareas');
+    if((await result).records[0]){
+        res.send(lista.map(function(nodo){return nodo['properties']}));
+    }
+    
+}
+
 exports.selectByCarnet = async (req, res) => {
     let carnet = parseInt(await req.query["carnet"]);
     console.log(typeof(carnet))
