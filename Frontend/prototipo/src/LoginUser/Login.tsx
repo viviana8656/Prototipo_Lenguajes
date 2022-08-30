@@ -36,7 +36,7 @@ export default function Login() {
 				cookies.set("carnet", data.carnet, { path: "/" })
 				cookies.set("contraseña", data.contraseña, { path: "/" })
 				alert("Bienvenid@: " + cookies.get('nombre') + " " + data.apellidos);
-				navigate("/home");
+				navigate("/todoForm");
 			}
 			else{
 				alert("Usuario no existe")
