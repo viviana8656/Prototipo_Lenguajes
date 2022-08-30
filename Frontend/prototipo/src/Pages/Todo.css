@@ -1,0 +1,18 @@
+/*.container {
+    margin: auto;
+    width: 50%;
+    border: 1px solid #73ad21;
+    background-color: #32746a;
+    padding: 10px;
+}*/
+
+.container{
+    height: 100%;
+    align-content: center;
+    }
+
+.add-btn {
+    float: right;
+    background-color: red;
+    color: #ffffff;
+}

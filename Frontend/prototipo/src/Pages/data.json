@@ -1,0 +1,22 @@
+[{
+    "id": 1,
+    "task": "Tomar agua",
+    "description": "hidratacion >>",
+    "completed": false
+},{
+    "id": 2,
+    "task": "comer",
+    "description": "me gusta la pizza",
+    "completed": false
+},
+{
+    "id": 3,
+    "task": "cocinar",
+    "description": "me gusta cocinar",
+    "completed": true
+},{
+    "id": 4,
+    "task": "Hacer daylies",
+    "description": "quiero a cyno",
+    "completed": false
+}]
