@@ -13,6 +13,9 @@ export default function TodoForm({addTodo}: any) {
     const handleOnChangeDescription = (e : any) => { 
         setUserInput2(e.currentTarget.value)
     }
+    const handleOnChangeFecha = (e : any) => { 
+        setFecha(e.currentTarget.value)
+    }
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
@@ -29,7 +32,7 @@ export default function TodoForm({addTodo}: any) {
         <form className='input-group' onSubmit = {handleSubmit}>
         <input className='form-control' type = 'text' placeholder='Nombre'  onChange = {handleOnChangeTask}/>
         <input className='form-control' type = 'text' placeholder='Descripción'  onChange = {handleOnChangeDescription}/>
-        <input className='form-control' type = 'date'/>
+        <input className='form-control' type = 'text' placeholder ='Fecha' onChange={handleOnChangeFecha}/>
         <button className='btn btn-warning'> Agregar </button>
         </form>
 

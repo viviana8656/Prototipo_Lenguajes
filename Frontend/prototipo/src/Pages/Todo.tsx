@@ -40,17 +40,16 @@ export default function Todo(){
         /*console.log('task', id);*/
 
         setTodos(todos.map((todo:any) => {
-            return todo.nombre === nombre ? {...todo, completed: !todo.completed} : {...todo};
+            return todo.nombre === nombre ? {...todo, completado: !todo.completado} : {...todo};
         }))
     }
 
-    const onDeleteItem = (nombre : any)  => {
-        setTodos([...todos].filter((todo:any) => todo.nombre !== nombre))
-        console.log('delete', nombre);
+    const onDeleteItem = async(nombre : any)  => {
+        await axios.delete(baseUrl+`delete/:nombre?nombre=${nombre}`);
     }
 
     const addTodo = async(newTodo: any, newDescription: string, fecha:string) => {
-        let newItem = {carnet:cookies.get("carnet"),nombre: newTodo, descripcion:newDescription, fecha:'30-08-22'};
+        let newItem = {carnet:cookies.get("carnet"),nombre: newTodo, descripcion:newDescription, fecha:fecha, completado:false};
         console.log('newTodo', newItem);
        await axios.post(baseUrl+`createTask`,newItem);
 

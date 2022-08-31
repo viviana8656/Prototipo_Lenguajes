@@ -58,7 +58,20 @@ exports.createTask = async (req,res) => {
     console.log(true);
     res.send(true)
 }
-
+exports.deleteTask = async(req,res)=>{
+    let nombre = req.query["nombre"]
+    connectionNeo4j = await startSession();
+    (connectionNeo4j).writeTransaction( txc =>
+        txc.run( 
+        'MATCH (b:Usuario)-[r:REALIZA] -> (c:Tarea {nombre: $nombre})  \
+         DELETE r',
+            {nombre: nombre}
+        ).catch(error => {
+            throw new Error(error);
+            // res.send(false)
+        }));
+    res.send(true)
+}
 exports.getUserTasks = async (req,res) => {
     let carnet = parseInt(await req.query["carnet"]);
     connectionNeo4j = await startSession();

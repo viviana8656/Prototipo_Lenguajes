@@ -11,7 +11,7 @@ export default function TodoItem({todo, onComplete, onDeleteItem}:any) {
     }
   return (
     <div style = {getStyle()}>
-        <input className='form-check-input' type = 'checkbox' checked = {todo.completed}
+        <input className='form-check-input' type = 'checkbox' checked = {todo.completado}
         onChange = {() => onComplete(todo.nombre)}/>
         <b>Tarea</b>: {todo.nombre} 
         {' '}
