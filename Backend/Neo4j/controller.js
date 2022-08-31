@@ -37,7 +37,7 @@ exports.createTask = async (req,res) => {
     let connectionNeo4j = await startSession();
     (connectionNeo4j).writeTransaction( txc=>
         txc.run(
-            'CREATE (a:Tarea {nombre: $nombre,descripción:$descripcion, fechaFin:$fecha}) RETURN a',
+            'CREATE (a:Tarea {nombre: $nombre,descripción:$descripcion, fechaFin:$fecha, completado:false}) RETURN a',
             { nombre: nombreTarea, descripcion:descripcionTarea,fecha:fechaFin}
         ).catch(error => {
             res.send(false);
@@ -75,6 +75,23 @@ exports.getUserTasks = async (req,res) => {
         res.send(lista.map(function(nodo){return nodo['properties']}));
     }
     
+}
+
+exports.completeTask = async (req, res) => {
+    let nombre = req.body["nombre"];
+    let descripcion = req.body["descripcion"];
+    let fecha = req.body["fecha"];
+    connectionNeo4j = await startSession();
+    (connectionNeo4j).writeTransaction( txc =>
+        txc.run( 
+        'MATCH (b:Tarea {nombre: $nombre,descripción:$descripcion, fechaFin:$fecha})  \
+         SET b.completado = true',
+            {nombre: nombre, descripcion:descripcion,fecha:fecha}
+        ).catch(error => {
+            throw new Error(error);
+            // res.send(false)
+        }));
+    res.send({nombre:nombre,descripcion:descripcion,fecha:fecha,completed:false})
 }
 
 exports.selectByCarnet = async (req, res) => {

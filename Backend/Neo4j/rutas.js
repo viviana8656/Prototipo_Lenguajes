@@ -7,5 +7,6 @@ module.exports = app => {
     router.post("/createUser",control.createUser);
     router.post("/createTask",control.createTask);
     router.get("/getTasks/:carnet",control.getUserTasks);
+    router.post("/completarTarea",control.completeTask);
     app.use("/api/prototipo",router);
 }
