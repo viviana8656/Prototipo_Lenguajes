@@ -21,7 +21,7 @@ const encryptPassword = async (password) => {
 const startSession = async () =>{
     const session = (await neo4jDriver).session();
     if(session._open){
-        console.log("neo4j connection success")
+       // console.log("neo4j connection success")
         return session
     }
     throw new Error('neo4j connection failed')
@@ -31,6 +31,9 @@ exports.createTask = async (req,res) => {
     let nombreTarea = req.body["nombre"];
     let descripcionTarea = req.body["descripcion"];
     let fechaFin = req.body["fecha"];
+    let carnet = req.body["carnet"];
+    carnet = parseInt(carnet);
+    console.log(carnet+" "+nombreTarea+" "+descripcionTarea+" "+fechaFin)
     let connectionNeo4j = await startSession();
     (connectionNeo4j).writeTransaction( txc=>
         txc.run(
@@ -40,16 +43,19 @@ exports.createTask = async (req,res) => {
             res.send(false);
             throw new Error(error)
         }));
-    let carnet = req.body["carnet"];
+    
     connectionNeo4j = await startSession();
     (connectionNeo4j).writeTransaction( txc =>
         txc.run( 
         'MATCH (a:Usuario {carnet: $carnet}), (b:Tarea {nombre: $nombre,descripción:$descripcion, fechaFin:$fecha})  \
          MERGE (a)-[r:REALIZA]->(b)',
             { carnet: carnet, nombre: nombreTarea, descripcion:descripcionTarea,fecha:fechaFin}
+            
         ).catch(error => {
+            console.log(false);
             throw new Error(error)
         }));
+    console.log(true);
     res.send(true)
 }
 
