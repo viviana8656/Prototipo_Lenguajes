@@ -36,21 +36,21 @@ export default function Todo(){
         navigate("/")
 
     }
-    const onComplete = (nombre : any) => {
+    const onComplete = async(nombre : any, fechaFin : any, completado:any) => {
         /*console.log('task', id);*/
-
-        setTodos(todos.map((todo:any) => {
-            return todo.nombre === nombre ? {...todo, completado: !todo.completado} : {...todo};
-        }))
+        await axios.post(baseUrl+`completarTarea`,{nombre:nombre,fecha:fechaFin,completado:completado});
+        // setTodos(todos.map((todo:any) => {
+        //     return todo.nombre === nombre ? {...todo, completado: !todo.completado} : {...todo};
+        // }))
     }
 
     const onDeleteItem = async(nombre : any)  => {
         await axios.delete(baseUrl+`delete/:nombre?nombre=${nombre}`);
+        peticionGet();
     }
 
     const addTodo = async(newTodo: any, newDescription: string, fecha:string) => {
-        let newItem = {carnet:cookies.get("carnet"),nombre: newTodo, descripcion:newDescription, fecha:fecha, completado:false};
-        console.log('newTodo', newItem);
+       let newItem = {carnet:cookies.get("carnet"),nombre: newTodo, descripcion:newDescription, fecha:fecha, completado:false};
        await axios.post(baseUrl+`createTask`,newItem);
 
     }

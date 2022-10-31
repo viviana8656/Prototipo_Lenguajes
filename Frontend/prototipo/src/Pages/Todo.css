@@ -15,4 +15,16 @@
     float: right;
     background-color: red;
     color: #ffffff;
+    position:relative;
+    left:-14px;
+    top:-8px;
+}
+
+.title {
+    font-size: 35px;
+    font-weight: 600;
+    background-image: linear-gradient(to left, #553c9a, #b393d3);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
 }

@@ -5,6 +5,7 @@ export default function TodoForm({addTodo}: any) {
     const [userInput, setUserInput] = useState('');
     const [userInput2, setUserInput2] = useState('');
     const [fecha,setFecha] = useState('');
+    let intento = 0;
 
     const handleOnChangeTask = (e : any) => { 
         setUserInput(e.currentTarget.value)
@@ -21,9 +22,6 @@ export default function TodoForm({addTodo}: any) {
         e.preventDefault();
         if(userInput.trim() !== ''){
             addTodo(userInput, userInput2,fecha);
-            // setUserInput('Tarea');
-            // setUserInput2('Descripción');
-            // setFecha('fecha');
         }
 
     }

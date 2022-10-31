@@ -21,7 +21,6 @@ const encryptPassword = async (password) => {
 const startSession = async () =>{
     const session = (await neo4jDriver).session();
     if(session._open){
-       // console.log("neo4j connection success")
         return session
     }
     throw new Error('neo4j connection failed')
@@ -33,7 +32,6 @@ exports.createTask = async (req,res) => {
     let fechaFin = req.body["fecha"];
     let carnet = req.body["carnet"];
     carnet = parseInt(carnet);
-    console.log(carnet+" "+nombreTarea+" "+descripcionTarea+" "+fechaFin)
     let connectionNeo4j = await startSession();
     (connectionNeo4j).writeTransaction( txc=>
         txc.run(
@@ -43,7 +41,6 @@ exports.createTask = async (req,res) => {
             res.send(false);
             throw new Error(error)
         }));
-    
     connectionNeo4j = await startSession();
     (connectionNeo4j).writeTransaction( txc =>
         txc.run( 
@@ -55,16 +52,16 @@ exports.createTask = async (req,res) => {
             console.log(false);
             throw new Error(error)
         }));
-    console.log(true);
     res.send(true)
 }
 exports.deleteTask = async(req,res)=>{
+    console.log("final");
     let nombre = req.query["nombre"]
     connectionNeo4j = await startSession();
     (connectionNeo4j).writeTransaction( txc =>
         txc.run( 
         'MATCH (b:Usuario)-[r:REALIZA] -> (c:Tarea {nombre: $nombre})  \
-         DELETE r',
+         DELETE r, c',
             {nombre: nombre}
         ).catch(error => {
             throw new Error(error);
@@ -92,24 +89,23 @@ exports.getUserTasks = async (req,res) => {
 
 exports.completeTask = async (req, res) => {
     let nombre = req.body["nombre"];
-    let descripcion = req.body["descripcion"];
     let fecha = req.body["fecha"];
+    let estado = !req.body["completado"];
     connectionNeo4j = await startSession();
     (connectionNeo4j).writeTransaction( txc =>
         txc.run( 
-        'MATCH (b:Tarea {nombre: $nombre,descripción:$descripcion, fechaFin:$fecha})  \
-         SET b.completado = true',
-            {nombre: nombre, descripcion:descripcion,fecha:fecha}
+        'MATCH (b:Tarea {nombre: $nombre,fechaFin:$fecha})  \
+         SET b.completado = $booleano',
+            {nombre: nombre, fecha:fecha,booleano:estado}
         ).catch(error => {
             throw new Error(error);
             // res.send(false)
         }));
-    res.send({nombre:nombre,descripcion:descripcion,fecha:fecha,completed:false})
+    res.send({nombre:nombre,fecha:fecha,completed:false})
 }
 
 exports.selectByCarnet = async (req, res) => {
     let carnet = parseInt(await req.query["carnet"]);
-    console.log(typeof(carnet))
     const connectionNeo4j = await startSession();
     const result = (await connectionNeo4j).writeTransaction( txc=>
         txc.run(
@@ -161,14 +157,12 @@ exports.createUser = async (req,res) => {
     ).catch(error => {
         throw new Error(error)
     }));
-    console.log("usuario creado")
     //connectionNeo4j.close();
     res.send(true);
     return true;
 }
 
 exports.login = async (req,res) => {
-    console.log('Entre aca')
     carnet = req.body["carnet"];
     carnet = parseInt(carnet);
     contraseña = await encryptPassword(req.body["contraseña"]);
@@ -193,7 +187,6 @@ exports.login = async (req,res) => {
         bcrypt.compare(req.body["contraseña"],pass, (err, isMatch) => {
             if (err) throw err;
             if (isMatch) {
-                console.log(nombre)
                 res.send({carnet:carnet,nombre:nombre, apellidos:apellidos, contraseña:pass})
                 return true;
             } else {

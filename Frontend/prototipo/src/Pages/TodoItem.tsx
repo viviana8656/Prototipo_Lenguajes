@@ -12,13 +12,10 @@ export default function TodoItem({todo, onComplete, onDeleteItem}:any) {
   return (
     <div style = {getStyle()}>
         <input className='form-check-input' type = 'checkbox' checked = {todo.completado}
-        onChange = {() => onComplete(todo.nombre)}/>
-        <b>Tarea</b>: {todo.nombre} 
-        {' '}
-        <b>Descripción</b>: {todo.descripción}
-        {' '}
-        <b>Fecha</b>: {todo.fechaFin}
-        <button className = 'add-btn' onClick = {() => onDeleteItem(todo.nombre)}>X</button> 
+        onChange = {() => onComplete(todo.nombre, todo.fechaFin, todo.completado)}/>
+        <b>{todo.nombre}: {todo.fechaFin}</b> <br />
+        <p>{todo.descripción}    
+        <button className = 'add-btn' onClick = {() => onDeleteItem(todo.nombre)}> X </button></p>  
     </div>
   )
 }
